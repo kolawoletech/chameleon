@@ -5,7 +5,7 @@ Prompt:
   in the ExampleNav component. The Dropdown and DropdownItem components have some problems, and also 
   have room for improvements (doesn't everything?) A couple items TODO here (make sure to explain with comments!)
   
-  0. How are you today? 😊
+  0. How are you today? 😊 I am doing quite fine
   1. Please fix any obvious issues you see with the dropdown.
   2. Please then make improvements to the dropdown.
   3. Consider the different ways that this dropdown might be used and what changes would
@@ -28,37 +28,44 @@ Error 3: Return Function Missing In DropdownItem
  Error 4(Warning):  Line 57:100:  aria-expended: This attribute is an invalid ARIA attribute. Did you mean to use aria-expanded
  */
 
-import React, {PureComponent} from 'react';
+import React, { PureComponent } from 'react';
 
 class Dropdown extends PureComponent {
-  constructor(props) {
+  constructor(props) { //mispelt constructor
     super(props);
     this.state = {
       isOpen: false,
     };
-  }
-/* 
-  componentDidMount(){
+    this.toggle = this.toggle.bind(this); // adding binding for parent class
 
   }
- */
-  toggle() {
-    const {isOpen} = this.state;
+  /* 
+    componentDidMount(){
+      // We can wrap the connect app.sync('PATCH', 'user', { dropdown_1_state: {true,false} }) state to the componentDidMount Lifecycle
 
-    this.setState({isOpen: isOpen});
+    }
+   */
+  toggle(e) {
+    e.preventDefault();                 // prevent event's defult behavoiur
+    const isClose = !this.state.isOpen;   // the toggler in it's current state wasn't working this new code does it:
+    this.setState({ isOpen: isClose });//toggle function
+
   }
 
   render() {
-    const {isOpen} = this.state;
-    const {label} = this.props;
+    const { isOpen } = this.state;
+    const { label } = this.props;
 
     return (
       <div className="dropdown">
         <button type="button" className="dropdown-button" id="dropdownButton" aria-haspopup="true" aria-expended={isOpen} onClick={this.toggle}>{label}</button>
-
-        <ul className={`${isOpen ? 'dropdown-open' : ''} dropdown-menu`} aria-labelledby="dropdownButton" role="menu">
-          {this.props.children}
-        </ul>
+        {
+          this.state.isOpen ?
+            (<ul aria-labelledby="dropdownButton" role="menu">
+              {this.props.children}
+            </ul>) :
+            (<></>)
+        }
       </div>
     );
   }
@@ -66,7 +73,6 @@ class Dropdown extends PureComponent {
 
 class DropdownItem extends PureComponent {
   render() {
-    // TODO implement me
 
     return (<li>Done</li>)
   }
@@ -91,4 +97,4 @@ class ExampleNav extends PureComponent {
   }
 }
 
-export default  ExampleNav
+export default ExampleNav
